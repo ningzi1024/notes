@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>search</title>
+</head>
+<body>
+<div id="inputBtn">
+	<input type="text" onchange="searchGame()"/>
+	<ul id="items">
+		
+	</ul>
+	<input type="hidden" name="GameId" />
+</div>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+var GAME = [
+	{gameId:1,title:'aaaa'},
+	{gameId:2,title:'bbbb'},
+	{gameId:3,title:'cccc'},
+	{gameId:4,title:'dddd'},
+	{gameId:5,title:'你好'}
+];
+$(function(){
+	init();
+})
+function init(){
+	$("#inputBtn input").bind('keyup', searchGame);
+	
+}
+	
+	function searchGame(){
+		var v = $(this).val();
+		$('input[name=GameId]').val('');
+		if(!v) {
+			$("#items").html("");
+			return;
+		}
+		var data = getSearchData(v);
+		$("#items").html("");
+		if(data.length<=0){
+			$("#items").html("");
+			return;
+		}
+		for(var i=0;i<data.length;i++){
+			var title = data[i].title;
+			title = title.replace(v,'<span style="color:red;">'+v+'</span>')
+			$li = $("<li>");
+			$li.attr('data-id',data[i].gameId).html(title);
+			$("#items").append($li);
+			$li.bind('click', selectGame);
+		}
+	}
+
+	function getSearchData(gameName){
+		if(!gameName) return [];
+		var arr = [];
+		for(var i=0;i<GAME.length;i++){
+			if(GAME[i].title.indexOf(gameName)>-1){
+				arr.push(GAME[i]);
+			}
+		}
+		return arr;
+	}
+
+	function selectGame(){
+		var gameId = $(this).attr('data-id');
+		$("#inputBtn input").val($(this).text());
+		$('input[name=GameId]').val(gameId);
+		$("#items").html("");
+	}
+</script>
+</body>
+</html>
